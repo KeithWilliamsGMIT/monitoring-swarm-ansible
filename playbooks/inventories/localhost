@@ -1,0 +1,6 @@
+swarm-01 ansible_ssh_host=localhost ansible_connection=local
+
+[docker_swarm_manager]
+swarm-01
+
+[docker_swarm_worker]

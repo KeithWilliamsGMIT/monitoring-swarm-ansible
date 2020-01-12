@@ -1,0 +1,7 @@
+---
+- hosts: docker_swarm_manager[0]
+  become: true
+  vars_files:
+    - vaults/vault.yml
+  roles:
+    - deploy-monitoring

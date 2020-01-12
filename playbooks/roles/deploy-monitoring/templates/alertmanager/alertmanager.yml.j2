@@ -1,0 +1,12 @@
+route:
+  receiver: 'slack'
+
+# https://prometheus.io/docs/alerting/configuration/#slack_config
+receivers:
+  - name: 'slack'
+    slack_configs:
+      - send_resolved: true
+        text: '{{ '{{' }} .CommonAnnotations.description {{ '}}' }}'
+        username: {{ slack_user }}
+        channel: {{ slack_channel }}
+        api_url: {{ slack_url }}

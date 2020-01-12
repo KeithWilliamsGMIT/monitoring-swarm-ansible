@@ -1,0 +1,28 @@
+---
+- name: Install required python modules for docker
+  pip:
+    name: "{{ item.name }}"
+    version: "{{ item.version }}"
+    state: present
+  with_items:
+  - { name: docker-py, version: 1.10.6 }
+
+- name: Create an overlay network
+  docker_network:
+    name: '{{ docker_network_name }}'
+    driver: overlay
+    state: present
+
+- import_tasks: prometheus.yml
+
+- import_tasks: alertmanager.yml
+
+- import_tasks: grafana.yml
+
+- name: Write out docker-compose-monitoring.yml template
+  template:
+    src: docker-compose-monitoring.yml.j2
+    dest: '{{ temporary_directory }}/docker-compose-monitoring.yml'
+
+- name: Deploy monitoring stack to swarm
+  command: docker stack deploy --with-registry-auth --compose-file {{ temporary_directory }}/docker-compose-monitoring.yml monitoring

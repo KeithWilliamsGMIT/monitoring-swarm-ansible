@@ -1,0 +1,17 @@
+# Directories
+temporary_directory: "/tmp"
+volume_directory: "/tmp"
+
+# Docker
+docker_network_name: "monitoring_network"
+
+# Docker image versions
+prometheus_version: latest
+alertmanager_version: latest
+cadvisor_version: latest
+node_exporter_version: latest
+grafana_version: latest
+
+# Alertmanager
+slack_user: 'AlertManager'
+slack_channel: '#alerts'

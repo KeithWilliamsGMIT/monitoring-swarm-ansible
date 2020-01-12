@@ -1,0 +1,28 @@
+---
+- name: Create directories for Grafana
+  become: true
+  file:
+    path: "{{ item }}"
+    state: directory
+    owner: 472
+    group: 472
+    mode: 0755
+    recurse: yes
+  with_items:
+    - '{{ volume_directory }}/monitoring/grafana/provisioning/dashboards'
+    - '{{ volume_directory }}/monitoring/grafana/provisioning/datasources'
+
+- name: Copy Grafana dashboards
+  copy:
+    src: grafana/dashboards/
+    dest: '{{ volume_directory }}/monitoring/grafana/provisioning/dashboards'
+
+- name: Write out dashboard.yml file
+  template:
+    src: grafana/dashboard.yml.j2
+    dest: '{{ volume_directory }}/monitoring/grafana/provisioning/dashboards/dashboard.yml'
+
+- name: Write out datasource.yml file
+  template:
+    src: grafana/datasource.yml.j2
+    dest: '{{ volume_directory }}/monitoring/grafana/provisioning/datasources/datasource.yml'

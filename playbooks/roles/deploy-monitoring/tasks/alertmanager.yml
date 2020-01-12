@@ -1,0 +1,13 @@
+---
+- name: Create directories for alertmanager
+  file:
+    path: "{{ item }}"
+    state: directory
+    recurse: yes
+  with_items:
+    - '{{ volume_directory }}/monitoring/alertmanager'
+
+- name: Write out alertmanager.yml file
+  template:
+    src: alertmanager/alertmanager.yml.j2
+    dest: '{{ volume_directory }}/monitoring/alertmanager/alertmanager.yml'

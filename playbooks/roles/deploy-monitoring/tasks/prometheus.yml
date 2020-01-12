@@ -1,0 +1,25 @@
+---
+- name: Create directories for prometheus
+  become: true
+  file:
+    path: "{{ item }}"
+    state: directory
+    owner: 65534
+    group: 65534
+    mode: 0755
+    recurse: yes
+  with_items:
+    - '{{ volume_directory }}/monitoring/prometheus'
+    - '{{ volume_directory }}/monitoring/etc/prometheus'
+
+- name: Write out prometheus.yml file
+  template:
+    src: prometheus/prometheus.yml.j2
+    dest: '{{ volume_directory }}/monitoring/etc/prometheus/prometheus.yml'
+    mode: 0644
+
+- name: Write out alert.rules.yml file
+  template:
+    src: prometheus/alert.rules.yml.j2
+    dest: '{{ volume_directory }}/monitoring/etc/prometheus/alert.rules.yml'
+    mode: 0644

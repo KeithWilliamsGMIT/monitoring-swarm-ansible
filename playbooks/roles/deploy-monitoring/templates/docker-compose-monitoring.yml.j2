@@ -1,0 +1,74 @@
+version: '3.6'
+
+services:
+  node-exporter:
+    image: prom/node-exporter:{{ node_exporter_version }}
+    ports:
+      - "9100:9100"
+    volumes:
+      - /sys:/host/sys
+      - /:/rootfs:ro
+      - /proc:/host/proc
+    deploy:
+      mode: global
+    networks:
+      - {{ docker_network_name }}
+
+  cadvisor:
+    image: google/cadvisor:{{ cadvisor_version }}
+    ports:
+      - "9080:8080"
+    volumes:
+      - /:/rootfs
+      - /var/run:/var/run
+      - /sys:/sys
+      - /var/lib/docker/:/var/lib/docker
+    deploy:
+      mode: global
+    networks:
+      - {{ docker_network_name }}
+
+  prometheus:
+    image: prom/prometheus:{{ prometheus_version }}
+    ports:
+      - "9090:9090"
+    volumes:
+      - "{{ volume_directory }}/monitoring/etc/prometheus:/etc/prometheus"
+      - "{{ volume_directory }}/monitoring/prometheus:/prometheus"
+    deploy:
+      mode: replicated
+      replicas: 1
+    networks:
+      - {{ docker_network_name }}
+
+  alertmanager:
+    image: prom/alertmanager:{{ alertmanager_version }}
+    ports:
+      - "9093:9093"
+    volumes:
+      - "{{ volume_directory }}/monitoring/alertmanager/alertmanager.yml:/etc/alertmanager/alertmanager.yml"
+    command:
+      - --config.file=/etc/alertmanager/alertmanager.yml
+    deploy:
+      mode: replicated
+      replicas: 1
+    networks:
+      - {{ docker_network_name }}
+
+  grafana:
+    image: grafana/grafana:{{ grafana_version }}
+    ports:
+      - "3000:3000"
+    volumes:
+      - "{{ volume_directory }}/monitoring/grafana/:/var/lib/grafana"
+      - "{{ volume_directory }}/monitoring/grafana/provisioning/:/etc/grafana/provisioning/"
+    deploy:
+      mode: replicated
+      replicas: 1
+    networks:
+      - {{ docker_network_name }}
+
+networks:
+  {{ docker_network_name }}:
+    external: true
+    name: {{ docker_network_name }}
