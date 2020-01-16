@@ -2,11 +2,11 @@
 
 This repository shows how to setup a monitoring stack running in Docker Swarm using Ansible to automate the task. This stack consists of the following well known technologies:
 
-+ Prometheus
-+ AlertManager
-+ cAdvisor
-+ Node Exporter
-+ Grafana
++ [Prometheus](https://prometheus.io/)
++ [AlertManager](https://prometheus.io/docs/alerting/alertmanager/)
++ [cAdvisor](https://github.com/google/cadvisor)
++ [Node Exporter](https://github.com/prometheus/node_exporter)
++ [Grafana](https://grafana.com/)
 
 ## Getting Started
 
@@ -39,7 +39,7 @@ ansible-playbook -i ./inventories/localhost initialize-swarm.yml --extra-vars="{
 Finally, we can deploy the stack containing all of our monitoring services to Docker Swarm using the `deploy-monitoring.yml` playbook.
 
 ```bash
-ansible-playbook -i ./inventories/localhost deploy-monitoring.yml --ask-vault-pass --ask-sudo-pass
+ansible-playbook -i ./inventories/localhost deploy-monitoring.yml --ask-vault-pass --ask-become-pass
 ```
 
 The `--ask-vault-pass` flag will prompt you for the vault password to access sensitive data. A default password used in this case, for demostraion purposes, is `password`.
@@ -56,28 +56,46 @@ szmfb4ptmdjz        monitoring_cadvisor        global              1/1          
 zcm0n2e2z5t4        monitoring_grafana         replicated          1/1                 grafana/grafana:latest      *:3000->3000/tcp
 vtq70cdl1s0v        monitoring_node-exporter   global              1/1                 prom/node-exporter:latest   *:9100->9100/tcp
 uvoj1vw3jvyo        monitoring_prometheus      replicated          1/1                 prom/prometheus:latest      *:9090->9090/tcp
-
 ```
 
 We can now check these services by navigating to `http://localhost:port/` in a browser. For example, to navigate to cAdvisor go to [http://localhost:9080/](http://localhost:9080/).
 
 ## Further configuration
 
+### Configuration files
+
 This repository comes with basic configuration files for the services. However, you will likely need to edit these files to suit the needs of your application. The configuration files for each service can be found in `monitoring-swarm-ansible/roles/deploy-monitoring/templates`. Each subdirectory contains the configuration files for the service of the same name, for example, `alertmanager`, `grafana` and `prometheus`.
 
-### AlertManager
+#### AlertManager
 
 + **alertmanager.yml** - The file defines the receivers for alerts. This repository sends all alerts to a Slack channel by default.
 
-### Grafana
+#### Grafana
 
 + **dashboard.yml** - This file defines the path to the dashboards. This repository contains one dashboard by default. More dashboard JSON files can be added to `monitoring-swarm-ansible/roles/deploy-monitoring/files/grafana/dashboards`.
 + **datasource.yml** - This file defines the datasources for Grafana. This repository only uses Prometheus by default.
 
-### Prometheus
+#### Prometheus
 
 + **alert.rules.yml** - This file defines any alert rules. This repository does not have any alerts by default.
 + **prometheus.yml** - This file defines the services to scape metrics from. This repository scapes the Prometheus, cAdvisor and node-exporter services by default.
+
+### Ansible variables
+
+There are also a number of Ansible variables that can be overridden. These can be found in the table below:
+
+| Variable Name | Description | Default Value |
+|---------------|-------------|---------------|
+| temporary_directory | A path to a directory where temporary files such as the compose file can be written to | "/tmp" |
+| volume_directory | A path to a directory where service data can be persisted | "/tmp" |
+| docker_network_name | The name of the new Docker overlay network | "monitoring_network" |
+| prometheus_version | The tag of the Prometheus Docker image to use | latest |
+| alertmanager_version | The tag of the AlertManager Docker image to use | latest |
+| cadvisor_version | The tag of the cAdvisor Docker image to use | latest |
+| node_exporter_version | The tag of the node exporter Docker image to use | latest |
+| grafana_version | The tag of the Grafana Docker image to use | latest |
+| slack_user | The name of the Slack user used to send alerts | 'AlertManager' |
+| slack_channel | The name of the Slack channel to send alerts to | '#alerts' |
 
 ## Contributing
 
