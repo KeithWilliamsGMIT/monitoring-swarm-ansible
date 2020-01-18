@@ -8,12 +8,14 @@ This repository shows how to setup a monitoring stack running in Docker Swarm us
 + [Node Exporter](https://github.com/prometheus/node_exporter)
 + [Grafana](https://grafana.com/)
 
+The services in this stack are also configured to work with the Traefik reverse proxy. The [proxy-swarm-ansible](https://github.com/KeithWilliamsGMIT/proxy-swarm-ansible) repository can be used to setup Traefik.
+
 ## Getting Started
 
 The first step to getting started is to clone the repository:
 
 ```bash
-git clone https://github.com/KeithWilliamsGMIT/monitoring-swarm-ansible
+git clone https://github.com/KeithWilliamsGMIT/monitoring-swarm-ansible.git
 ```
 
 Next, install Ansible and then we can use two existing Ansible roles to install Docker and initialise a Docker Swarm. These roles are defined in the `requirements.yml` file and will be installed to `~/.ansible/roles/` by default using the below commands:

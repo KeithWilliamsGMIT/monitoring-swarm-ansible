@@ -2,6 +2,9 @@
 temporary_directory: "/tmp"
 volume_directory: "/tmp"
 
+# Domain
+domain_name: example.local
+
 # Docker
 docker_network_name: "monitoring_network"
 
