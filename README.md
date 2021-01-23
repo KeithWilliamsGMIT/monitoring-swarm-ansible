@@ -99,6 +99,16 @@ There are also a number of Ansible variables that can be overridden. These can b
 | slack_user | The name of the Slack user used to send alerts | 'AlertManager' |
 | slack_channel | The name of the Slack channel to send alerts to | '#alerts' |
 
+## Using this role
+
+To use this role add the following to your `requirements.yml` file:
+
+```
+- src: https://github.com/KeithWilliamsGMIT/monitoring-swarm-ansible.git
+  version: master
+  name: deploy-monitoring
+```
+
 ## Contributing
 
 Any contribution to this repository is appreciated, whether it is a pull request, bug report, feature request, feedback or even starring the repository. Some potential areas that need further refinement are:
