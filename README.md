@@ -113,9 +113,9 @@ To use this role add the following to your `requirements.yml` file:
 
 Any contribution to this repository is appreciated, whether it is a pull request, bug report, feature request, feedback or even starring the repository. Some potential areas that need further refinement are:
 
-+ Hardening of playbooks
-+ Making playbooks completely idempotent
-+ Publish to Ansible Galaxy
++ Hardening of role
++ Making role completely idempotent
++ Publishing role to Ansible Galaxy
 + Documentation
 
 ## Conclusion

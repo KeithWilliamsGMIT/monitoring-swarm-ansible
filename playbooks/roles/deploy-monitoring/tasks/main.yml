@@ -1,5 +1,12 @@
 ---
-- name: Install required python modules for docker
+- name: Install required python modules for Docker
+  pip:
+    name: "{{ item.name }}"
+    state: present
+  with_items:
+  - { name: jsondiff }
+
+- name: Install required python modules for Docker (with specific versions)
   pip:
     name: "{{ item.name }}"
     version: "{{ item.version }}"
@@ -13,6 +20,11 @@
     driver: overlay
     state: present
 
+- name: Remove monitoring stack
+  docker_stack:
+    name: monitoring
+    state: absent
+
 - import_tasks: prometheus.yml
 
 - import_tasks: alertmanager.yml
@@ -24,5 +36,10 @@
     src: docker-compose-monitoring.yml.j2
     dest: '{{ temporary_directory }}/docker-compose-monitoring.yml'
 
-- name: Deploy monitoring stack to swarm
-  command: docker stack deploy --with-registry-auth --compose-file {{ temporary_directory }}/docker-compose-monitoring.yml monitoring
+- name: Deploy monitoring stack swarm
+  docker_stack:
+    state: present
+    name: monitoring
+    compose:
+      - "{{ temporary_directory }}/docker-compose-monitoring.yml"
+    with_registry_auth: yes
